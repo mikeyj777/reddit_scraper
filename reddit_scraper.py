@@ -3,10 +3,13 @@ import json
 import time
 from typing import List, Dict, Optional
 
+subreddit = "ClaudeAI"
+
 class RedditClaudeAIScraper:
-    def __init__(self):
+    def __init__(self, subreddit: str = 'ClaudeAI'):
+        self.subreddit = subreddit
         self.base_url = "https://www.reddit.com"
-        self.subreddit_url = f"{self.base_url}/r/ClaudeAI.json"
+        self.subreddit_url = f"{self.base_url}/r/{self.subreddit}.json"
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
@@ -126,7 +129,7 @@ class RedditClaudeAIScraper:
         
         return summary
 
-def main():
+def main(subreddit: str = 'ClaudeAI') -> List[Dict]:
     """Main function to run the scraper"""
     scraper = RedditClaudeAIScraper()
     
@@ -152,6 +155,4 @@ def main():
     return claude_posts_list
 
 if __name__ == "__main__":
-    claude_posts_list = main()
-    print(claude_posts_list)
-    apple = 1
+    claude_posts_list = main(subreddit=subreddit)
