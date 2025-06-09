@@ -3,9 +3,9 @@ import json
 import time
 from typing import List, Dict, Optional
 
-subreddit = "ClaudeAI"
+subreddit = "CPTSD"
 
-class RedditClaudeAIScraper:
+class RedditAIScraper:
     def __init__(self, subreddit: str = 'ClaudeAI'):
         self.subreddit = subreddit
         self.base_url = "https://www.reddit.com"
@@ -13,7 +13,7 @@ class RedditClaudeAIScraper:
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
-        self.claude_posts_list = []
+        self._posts_list = []
         
     def fetch_subreddit_json(self) -> Optional[Dict]:
         """Fetch the main subreddit JSON data"""
@@ -57,7 +57,7 @@ class RedditClaudeAIScraper:
     
     def scrape_all_posts(self, delay: float = 1.0) -> List[Dict]:
         """Main method to scrape all posts from the subreddit"""
-        print("Fetching ClaudeAI subreddit data...")
+        print("Fetching subreddit data...")
         subreddit_data = self.fetch_subreddit_json()
         
         if not subreddit_data:
@@ -85,7 +85,7 @@ class RedditClaudeAIScraper:
                         'post_json': post_json
                     }
                     
-                    self.claude_posts_list.append(post_entry)
+                    self._posts_list.append(post_entry)
                     print(f"✓ Added: {post_info['post_description'][:50]}...")
                 else:
                     print(f"✗ Skipped post due to missing link")
@@ -98,29 +98,29 @@ class RedditClaudeAIScraper:
             print(f"Error parsing subreddit data structure: {e}")
             return []
         
-        print(f"\nCompleted! Scraped {len(self.claude_posts_list)} posts.")
-        return self.claude_posts_list
+        print(f"\nCompleted! Scraped {len(self._posts_list)} posts.")
+        return self._posts_list
     
-    def save_to_file(self, filename: str = 'claude_posts.json'):
+    def save_to_file(self, filename: str = '_posts.txt'):
         """Save the scraped data to a JSON file"""
         try:
             with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(self.claude_posts_list, f, indent=2, ensure_ascii=False)
+                json.dump(self._posts_list, f, indent=2, ensure_ascii=False)
             print(f"Data saved to {filename}")
         except Exception as e:
             print(f"Error saving to file: {e}")
     
     def get_posts_summary(self) -> Dict:
         """Get a summary of the scraped posts"""
-        if not self.claude_posts_list:
+        if not self._posts_list:
             return {"total_posts": 0, "posts": []}
         
         summary = {
-            "total_posts": len(self.claude_posts_list),
+            "total_posts": len(self._posts_list),
             "posts": []
         }
         
-        for post in self.claude_posts_list:
+        for post in self._posts_list:
             summary["posts"].append({
                 "title": post["post_description"],
                 "link": post["post_link"],
@@ -131,13 +131,13 @@ class RedditClaudeAIScraper:
 
 def main(subreddit: str = 'ClaudeAI') -> List[Dict]:
     """Main function to run the scraper"""
-    scraper = RedditClaudeAIScraper()
+    scraper = RedditAIScraper(subreddit=subreddit)
     
     # Scrape all posts
-    claude_posts_list = scraper.scrape_all_posts(delay=1.0)
+    _posts_list = scraper.scrape_all_posts(delay=1.0)
     
     # Save to file
-    scraper.save_to_file('claude_posts.json')
+    scraper.save_to_file('_posts.txt')
     
     # Print summary
     summary = scraper.get_posts_summary()
@@ -152,7 +152,7 @@ def main(subreddit: str = 'ClaudeAI') -> List[Dict]:
             print(f"   JSON loaded: {post['has_json']}")
             print()
     
-    return claude_posts_list
+    return _posts_list
 
 if __name__ == "__main__":
-    claude_posts_list = main(subreddit=subreddit)
+    _posts_list = main(subreddit=subreddit)
